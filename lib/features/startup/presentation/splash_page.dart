@@ -1,6 +1,9 @@
+
 import 'package:flutter/material.dart';
 
-import '../../home/presentation/pages/home_page.dart';
+import '../../onboarding/data/onboarding_storage.dart';
+import '../../onboarding/presentation/onboarding_page.dart';
+import '../../../app/shell/app_shell.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -9,7 +12,9 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
+class _SplashPageState extends State<SplashPage>
+    with TickerProviderStateMixin {
+
   late final AnimationController _introController;
   late final AnimationController _progressController;
 
@@ -37,48 +42,67 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     );
 
     // Animação de escala do conteúdo
-    _scaleAnimation = Tween<double>(begin: 0.85, end: 1.0).animate(
+    _scaleAnimation = Tween<double>(
+      begin: 0.85,
+      end: 1.0,
+    ).animate(
       CurvedAnimation(
         parent: _introController,
-        curve: const Interval(0.0, 0.65, curve: Curves.easeOutBack),
+        curve: const Interval(
+          0.0,
+          0.65,
+          curve: Curves.easeOutBack,
+        ),
       ),
     );
 
     // Controlador independente da barra de progresso
     _progressController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 4),
+      duration: const Duration(seconds: 3),
     );
 
-    // Inicializa a aplicação
     _initialize();
   }
 
+  // Inicialização e verificação do primeiro acesso
   Future<void> _initialize() async {
+
     // 1. Aguarda a animação de entrada terminar
     await _introController.forward();
 
-    if (!mounted) {
-      return;
-    }
+    if (!mounted) return;
 
     // 2. Aguarda a barra de progresso completar
     await _progressController.forward();
 
-    if (!mounted) {
-      return;
-    }
+    if (!mounted) return;
 
-    // 3. Navega para a página inicial
-    _goTo(const HomePage());
+    // 3. Verifica se o usuário já concluiu o onboarding
+    final storage = OnboardingStorage();
+
+    final onboardingCompleted = await storage.isCompleted();
+
+    if (!mounted) return;
+
+    // 4. Direciona conforme o estado do onboarding
+    if (onboardingCompleted) {
+      _goTo(const AppShell());
+    } else {
+      _goTo(const OnboardingPage());
+    }
   }
 
+  // Navegação com transição Fade
   void _goTo(Widget page) {
     Navigator.of(context).pushReplacement(
       PageRouteBuilder<void>(
         pageBuilder: (_, __, ___) => page,
         transitionsBuilder: (_, animation, __, child) {
-          return FadeTransition(opacity: animation, child: child);
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
         },
         transitionDuration: const Duration(milliseconds: 600),
       ),
@@ -100,7 +124,10 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.white, Color(0xFFFFF6F5)],
+            colors: [
+              Colors.white,
+              Color(0xFFFFF6F5),
+            ],
           ),
         ),
         child: Center(
@@ -113,6 +140,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+
                     // Logo com sombra suave
                     Container(
                       padding: const EdgeInsets.all(20),
@@ -121,7 +149,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                         color: Colors.white,
                         boxShadow: [
                           BoxShadow(
-                            color: primaryColor.withOpacity(0.15),
+                            color: primaryColor.withValues(alpha: 0.15),
                             blurRadius: 30,
                             offset: const Offset(0, 10),
                           ),
@@ -173,8 +201,10 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                           builder: (context, child) {
                             return LinearProgressIndicator(
                               value: _progressController.value,
-                              backgroundColor: secondaryColor.withOpacity(0.2),
-                              valueColor: const AlwaysStoppedAnimation<Color>(
+                              backgroundColor:
+                                  secondaryColor.withValues(alpha: 0.2),
+                              valueColor:
+                                  const AlwaysStoppedAnimation<Color>(
                                 secondaryColor,
                               ),
                               minHeight: 6,
