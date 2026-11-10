@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 import '../data/onboarding_storage.dart';
 import '../domain/onboarding_item.dart';
+import '../../../app/routes/fade_route.dart';
 import '../../../app/shell/app_shell.dart';
+import '../../../app/theme/app_colors.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -44,9 +46,6 @@ class _OnboardingPageState extends State<OnboardingPage>
 
   int _currentPage = 0;
   bool _isFinishing = false;
-
-  static const Color primaryColor = Color(0xFFFF705D);
-  static const Color secondaryColor = Color(0xFF40C4C8);
 
   @override
   void initState() {
@@ -106,11 +105,7 @@ class _OnboardingPageState extends State<OnboardingPage>
 
       if (!mounted) return;
 
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => const AppShell(),
-        ),
-      );
+      Navigator.of(context).pushReplacement(fadeRoute(const AppShell()));
     } catch (e) {
       if (!mounted) return;
 
@@ -148,7 +143,7 @@ class _OnboardingPageState extends State<OnboardingPage>
               child: const Text(
                 'Pular',
                 style: TextStyle(
-                  color: primaryColor,
+                  color: AppColors.coral,
                   fontWeight: FontWeight.w700,
                   fontSize: 15,
                 ),
@@ -176,8 +171,8 @@ class _OnboardingPageState extends State<OnboardingPage>
             height: 8,
             decoration: BoxDecoration(
               color: isActive
-                  ? primaryColor
-                  : secondaryColor.withValues(alpha: 0.35),
+                  ? AppColors.coral
+                  : AppColors.teal.withValues(alpha: 0.35),
               borderRadius: BorderRadius.circular(20),
             ),
           );
@@ -238,10 +233,10 @@ class _OnboardingPageState extends State<OnboardingPage>
             child: FilledButton(
               onPressed: _isFinishing ? null : _nextPage,
               style: FilledButton.styleFrom(
-                backgroundColor: primaryColor,
+                backgroundColor: AppColors.coral,
                 foregroundColor: Colors.white,
                 disabledBackgroundColor:
-                    primaryColor.withValues(alpha: 0.6),
+                    AppColors.coral.withValues(alpha: 0.6),
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -283,9 +278,6 @@ class _OnboardingContent extends StatelessWidget {
 
   final OnboardingItem item;
 
-  static const Color primaryColor = Color(0xFFFF705D);
-  static const Color secondaryColor = Color(0xFF40C4C8);
-
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -306,7 +298,7 @@ class _OnboardingContent extends StatelessWidget {
                 borderRadius: BorderRadius.circular(28),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryColor.withValues(alpha: 0.10),
+                    color: AppColors.coral.withValues(alpha: 0.10),
                     blurRadius: 24,
                     offset: const Offset(0, 10),
                   ),
@@ -321,7 +313,7 @@ class _OnboardingContent extends StatelessWidget {
                     child: Icon(
                       Icons.pets_rounded,
                       size: 90,
-                      color: secondaryColor,
+                      color: AppColors.teal,
                     ),
                   );
                 },
@@ -336,7 +328,7 @@ class _OnboardingContent extends StatelessWidget {
             item.title,
             textAlign: TextAlign.center,
             style: textTheme.headlineSmall?.copyWith(
-              color: primaryColor,
+              color: AppColors.coral,
               fontWeight: FontWeight.bold,
               fontSize: 27,
             ),
@@ -349,7 +341,7 @@ class _OnboardingContent extends StatelessWidget {
             width: 48,
             height: 4,
             decoration: BoxDecoration(
-              color: secondaryColor,
+              color: AppColors.teal,
               borderRadius: BorderRadius.circular(20),
             ),
           ),

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 import '../../onboarding/data/onboarding_storage.dart';
 import '../../onboarding/presentation/onboarding_page.dart';
+import '../../../app/routes/fade_route.dart';
 import '../../../app/shell/app_shell.dart';
+import '../../../app/theme/app_colors.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -20,10 +22,6 @@ class _SplashPageState extends State<SplashPage>
 
   late final Animation<double> _fadeAnimation;
   late final Animation<double> _scaleAnimation;
-
-  // Cores da marca PetBem
-  static const Color primaryColor = Color(0xFFFF705D);
-  static const Color secondaryColor = Color(0xFF40C4C8);
 
   @override
   void initState() {
@@ -95,18 +93,7 @@ class _SplashPageState extends State<SplashPage>
 
   // Navegação com transição Fade
   void _goTo(Widget page) {
-    Navigator.of(context).pushReplacement(
-      PageRouteBuilder<void>(
-        pageBuilder: (_, __, ___) => page,
-        transitionsBuilder: (_, animation, __, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
-        },
-        transitionDuration: const Duration(milliseconds: 600),
-      ),
-    );
+    Navigator.of(context).pushReplacement(fadeRoute(page));
   }
 
   @override
@@ -126,7 +113,7 @@ class _SplashPageState extends State<SplashPage>
             end: Alignment.bottomCenter,
             colors: [
               Colors.white,
-              Color(0xFFFFF6F5),
+              AppColors.background,
             ],
           ),
         ),
@@ -149,7 +136,7 @@ class _SplashPageState extends State<SplashPage>
                         color: Colors.white,
                         boxShadow: [
                           BoxShadow(
-                            color: primaryColor.withValues(alpha: 0.15),
+                            color: AppColors.coral.withValues(alpha: 0.15),
                             blurRadius: 30,
                             offset: const Offset(0, 10),
                           ),
@@ -171,7 +158,7 @@ class _SplashPageState extends State<SplashPage>
                       style: TextStyle(
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
-                        color: primaryColor,
+                        color: AppColors.coral,
                         letterSpacing: 1.2,
                       ),
                     ),
@@ -202,10 +189,10 @@ class _SplashPageState extends State<SplashPage>
                             return LinearProgressIndicator(
                               value: _progressController.value,
                               backgroundColor:
-                                  secondaryColor.withValues(alpha: 0.2),
+                                  AppColors.teal.withValues(alpha: 0.2),
                               valueColor:
                                   const AlwaysStoppedAnimation<Color>(
-                                secondaryColor,
+                                AppColors.teal,
                               ),
                               minHeight: 6,
                             );

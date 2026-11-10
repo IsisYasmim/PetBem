@@ -1,11 +1,10 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../../app/theme/app_colors.dart';
+
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
-
-  static const Color primaryColor = Color(0xFFFF705D);
-  static const Color secondaryColor = Color(0xFF40C4C8);
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +31,13 @@ class ProfilePage extends StatelessWidget {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: secondaryColor.withValues(alpha: 0.15),
+                color: AppColors.teal.withValues(alpha: 0.15),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.person_rounded,
                 size: 55,
-                color: primaryColor,
+                color: AppColors.coral,
               ),
             ),
 
@@ -128,8 +127,6 @@ class _ProfileOption extends StatelessWidget {
   final String subtitle;
   final VoidCallback onTap;
 
-  static const Color primaryColor = Color(0xFFFF705D);
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -149,7 +146,7 @@ class _ProfileOption extends StatelessWidget {
         ),
         leading: Icon(
           icon,
-          color: primaryColor,
+          color: AppColors.coral,
           size: 26,
         ),
         title: Text(
