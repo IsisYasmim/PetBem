@@ -1,23 +1,24 @@
-
 import 'package:flutter/material.dart';
+
+import '../../../../app/theme/app_colors.dart';
+import '../../domain/entities/user_profile.dart';
+import '../profile_scope.dart';
+import 'personal_data_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
-  static const Color primaryColor = Color(0xFFFF705D);
-  static const Color secondaryColor = Color(0xFF40C4C8);
-
   @override
   Widget build(BuildContext context) {
+    final profile = ProfileScope.of(context).profile;
+    final name = profile.name;
+
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
       appBar: AppBar(
         title: const Text(
           'Meu Perfil',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -32,34 +33,28 @@ class ProfilePage extends StatelessWidget {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: secondaryColor.withValues(alpha: 0.15),
+                color: AppColors.teal.withValues(alpha: 0.15),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.person_rounded,
                 size: 55,
-                color: primaryColor,
+                color: AppColors.coral,
               ),
             ),
 
             const SizedBox(height: 16),
 
-            const Text(
-              'Olá, usuário!',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+            Text(
+              name == null ? 'Olá!' : 'Olá, $name!',
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 6),
 
             const Text(
               'Bem-vindo ao PetBem!',
-              style: TextStyle(
-                color: Colors.black54,
-                fontSize: 14,
-              ),
+              style: TextStyle(color: Colors.black54, fontSize: 14),
             ),
 
             const SizedBox(height: 30),
@@ -68,21 +63,14 @@ class ProfilePage extends StatelessWidget {
             _ProfileOption(
               icon: Icons.person_outline,
               title: 'Dados pessoais',
-              subtitle: 'Gerencie suas informações',
-              onTap: () {},
+              subtitle: _personalDataSubtitle(profile),
+              onTap: () => Navigator.of(context).push(PersonalDataPage.route()),
             ),
 
             _ProfileOption(
               icon: Icons.shopping_bag_outlined,
               title: 'Meus pedidos',
               subtitle: 'Consulte seu histórico de compras',
-              onTap: () {},
-            ),
-
-            _ProfileOption(
-              icon: Icons.pets_outlined,
-              title: 'Meus pets',
-              subtitle: 'Gerencie os dados dos seus animais',
               onTap: () {},
             ),
 
@@ -115,6 +103,18 @@ class ProfilePage extends StatelessWidget {
   }
 }
 
+String _personalDataSubtitle(UserProfile profile) {
+  if (!profile.isComplete) {
+    return 'Você e seus pets';
+  }
+  final pets = profile.pets.map((pet) => pet.name).join(', ');
+  final name = profile.name;
+  if (name == null || name.isEmpty) {
+    return pets;
+  }
+  return '$name · $pets';
+}
+
 class _ProfileOption extends StatelessWidget {
   const _ProfileOption({
     required this.icon,
@@ -128,41 +128,21 @@ class _ProfileOption extends StatelessWidget {
   final String subtitle;
   final VoidCallback onTap;
 
-  static const Color primaryColor = Color(0xFFFF705D);
-
   @override
   Widget build(BuildContext context) {
     return Card(
       color: Colors.white,
       elevation: 0,
-      margin: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 5,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 18,
-          vertical: 6,
-        ),
-        leading: Icon(
-          icon,
-          color: primaryColor,
-          size: 26,
-        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
+        leading: Icon(icon, color: AppColors.coral, size: 26),
         title: Text(
           title,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 15,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
         ),
-        subtitle: Text(
-          subtitle,
-          style: const TextStyle(fontSize: 12),
-        ),
+        subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
         trailing: const Icon(
           Icons.chevron_right_rounded,
           color: Colors.black38,

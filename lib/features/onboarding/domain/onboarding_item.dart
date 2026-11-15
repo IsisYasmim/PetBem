@@ -1,4 +1,3 @@
-
 class OnboardingItem {
   const OnboardingItem({
     required this.title,

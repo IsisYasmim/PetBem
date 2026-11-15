@@ -1,9 +1,10 @@
-
 import 'package:flutter/material.dart';
 
 import '../data/onboarding_storage.dart';
 import '../domain/onboarding_item.dart';
+import '../../../app/routes/fade_route.dart';
 import '../../../app/shell/app_shell.dart';
+import '../../../app/theme/app_colors.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -11,20 +12,17 @@ class OnboardingPage extends StatefulWidget {
   static const List<OnboardingItem> items = [
     OnboardingItem(
       title: 'Descubra produtos',
-      description:
-          'Encontre rações, brinquedos e acessórios para seu pet.',
+      description: 'Encontre rações, brinquedos e acessórios para seu pet.',
       imagePath: 'assets/onboarding/products.jpg',
     ),
     OnboardingItem(
       title: 'Pagamento Seguro',
-      description:
-          'Check-out simplificado & pagamento seguro.',
+      description: 'Check-out simplificado & pagamento seguro.',
       imagePath: 'assets/onboarding/payment.jpg',
     ),
     OnboardingItem(
       title: 'Acompanhe Entrega',
-      description:
-          'Acompanhe pedidos em tempo real.',
+      description: 'Acompanhe pedidos em tempo real.',
       imagePath: 'assets/onboarding/delivery.jpg',
     ),
   ];
@@ -35,7 +33,6 @@ class OnboardingPage extends StatefulWidget {
 
 class _OnboardingPageState extends State<OnboardingPage>
     with SingleTickerProviderStateMixin {
-
   late final AnimationController _introController;
   late final Animation<double> _fadeAnimation;
   late final Animation<Offset> _slideAnimation;
@@ -44,9 +41,6 @@ class _OnboardingPageState extends State<OnboardingPage>
 
   int _currentPage = 0;
   bool _isFinishing = false;
-
-  static const Color primaryColor = Color(0xFFFF705D);
-  static const Color secondaryColor = Color(0xFF40C4C8);
 
   @override
   void initState() {
@@ -62,15 +56,10 @@ class _OnboardingPageState extends State<OnboardingPage>
       curve: Curves.easeOut,
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.06),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _introController,
-        curve: Curves.easeOutCubic,
-      ),
-    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.06), end: Offset.zero).animate(
+          CurvedAnimation(parent: _introController, curve: Curves.easeOutCubic),
+        );
 
     _introController.forward();
   }
@@ -106,11 +95,7 @@ class _OnboardingPageState extends State<OnboardingPage>
 
       if (!mounted) return;
 
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => const AppShell(),
-        ),
-      );
+      Navigator.of(context).pushReplacement(fadeRoute(const AppShell()));
     } catch (e) {
       if (!mounted) return;
 
@@ -127,28 +112,22 @@ class _OnboardingPageState extends State<OnboardingPage>
   }
 
   Widget _buildTopBar() {
-    final isLastPage =
-        _currentPage == OnboardingPage.items.length - 1;
+    final isLastPage = _currentPage == OnboardingPage.items.length - 1;
 
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 8,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         child: Align(
           alignment: Alignment.centerRight,
           child: AnimatedOpacity(
             opacity: isLastPage ? 0 : 1,
             duration: const Duration(milliseconds: 200),
             child: TextButton(
-              onPressed: isLastPage || _isFinishing
-                  ? null
-                  : _finishOnboarding,
+              onPressed: isLastPage || _isFinishing ? null : _finishOnboarding,
               child: const Text(
                 'Pular',
                 style: TextStyle(
-                  color: primaryColor,
+                  color: AppColors.coral,
                   fontWeight: FontWeight.w700,
                   fontSize: 15,
                 ),
@@ -163,42 +142,35 @@ class _OnboardingPageState extends State<OnboardingPage>
   Widget _buildPageIndicator() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        OnboardingPage.items.length,
-        (index) {
-          final isActive = index == _currentPage;
+      children: List.generate(OnboardingPage.items.length, (index) {
+        final isActive = index == _currentPage;
 
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            width: isActive ? 26 : 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: isActive
-                  ? primaryColor
-                  : secondaryColor.withValues(alpha: 0.35),
-              borderRadius: BorderRadius.circular(20),
-            ),
-          );
-        },
-      ),
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: isActive ? 26 : 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: isActive
+                ? AppColors.coral
+                : AppColors.teal.withValues(alpha: 0.35),
+            borderRadius: BorderRadius.circular(20),
+          ),
+        );
+      }),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final isLastPage =
-        _currentPage == OnboardingPage.items.length - 1;
+    final isLastPage = _currentPage == OnboardingPage.items.length - 1;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          FadeTransition(
-            opacity: _fadeAnimation,
-            child: _buildTopBar(),
-          ),
+          FadeTransition(opacity: _fadeAnimation, child: _buildTopBar()),
 
           Expanded(
             child: FadeTransition(
@@ -238,10 +210,9 @@ class _OnboardingPageState extends State<OnboardingPage>
             child: FilledButton(
               onPressed: _isFinishing ? null : _nextPage,
               style: FilledButton.styleFrom(
-                backgroundColor: primaryColor,
+                backgroundColor: AppColors.coral,
                 foregroundColor: Colors.white,
-                disabledBackgroundColor:
-                    primaryColor.withValues(alpha: 0.6),
+                disabledBackgroundColor: AppColors.coral.withValues(alpha: 0.6),
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -277,14 +248,9 @@ class _OnboardingPageState extends State<OnboardingPage>
 }
 
 class _OnboardingContent extends StatelessWidget {
-  const _OnboardingContent({
-    required this.item,
-  });
+  const _OnboardingContent({required this.item});
 
   final OnboardingItem item;
-
-  static const Color primaryColor = Color(0xFFFF705D);
-  static const Color secondaryColor = Color(0xFF40C4C8);
 
   @override
   Widget build(BuildContext context) {
@@ -306,7 +272,7 @@ class _OnboardingContent extends StatelessWidget {
                 borderRadius: BorderRadius.circular(28),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryColor.withValues(alpha: 0.10),
+                    color: AppColors.coral.withValues(alpha: 0.10),
                     blurRadius: 24,
                     offset: const Offset(0, 10),
                   ),
@@ -321,7 +287,7 @@ class _OnboardingContent extends StatelessWidget {
                     child: Icon(
                       Icons.pets_rounded,
                       size: 90,
-                      color: secondaryColor,
+                      color: AppColors.teal,
                     ),
                   );
                 },
@@ -336,7 +302,7 @@ class _OnboardingContent extends StatelessWidget {
             item.title,
             textAlign: TextAlign.center,
             style: textTheme.headlineSmall?.copyWith(
-              color: primaryColor,
+              color: AppColors.coral,
               fontWeight: FontWeight.bold,
               fontSize: 27,
             ),
@@ -349,7 +315,7 @@ class _OnboardingContent extends StatelessWidget {
             width: 48,
             height: 4,
             decoration: BoxDecoration(
-              color: secondaryColor,
+              color: AppColors.teal,
               borderRadius: BorderRadius.circular(20),
             ),
           ),
