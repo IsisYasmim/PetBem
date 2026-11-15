@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../domain/product_category.dart';
+import '../domain/entities/product_category.dart';
 
 extension ProductCategoryIcon on ProductCategory {
   IconData get icon => switch (this) {

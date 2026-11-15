@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../onboarding/data/onboarding_storage.dart';
@@ -6,6 +5,7 @@ import '../../onboarding/presentation/onboarding_page.dart';
 import '../../../app/routes/fade_route.dart';
 import '../../../app/shell/app_shell.dart';
 import '../../../app/theme/app_colors.dart';
+import '../../profile/presentation/profile_scope.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -14,9 +14,7 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage>
-    with TickerProviderStateMixin {
-
+class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   late final AnimationController _introController;
   late final AnimationController _progressController;
 
@@ -40,17 +38,10 @@ class _SplashPageState extends State<SplashPage>
     );
 
     // Animação de escala do conteúdo
-    _scaleAnimation = Tween<double>(
-      begin: 0.85,
-      end: 1.0,
-    ).animate(
+    _scaleAnimation = Tween<double>(begin: 0.85, end: 1.0).animate(
       CurvedAnimation(
         parent: _introController,
-        curve: const Interval(
-          0.0,
-          0.65,
-          curve: Curves.easeOutBack,
-        ),
+        curve: const Interval(0.0, 0.65, curve: Curves.easeOutBack),
       ),
     );
 
@@ -65,6 +56,8 @@ class _SplashPageState extends State<SplashPage>
 
   // Inicialização e verificação do primeiro acesso
   Future<void> _initialize() async {
+    // Começa já, em paralelo com as animações.
+    final profileLoad = ProfileScope.read(context).load();
 
     // 1. Aguarda a animação de entrada terminar
     await _introController.forward();
@@ -76,10 +69,11 @@ class _SplashPageState extends State<SplashPage>
 
     if (!mounted) return;
 
-    // 3. Verifica se o usuário já concluiu o onboarding
-    final storage = OnboardingStorage();
-
-    final onboardingCompleted = await storage.isCompleted();
+    // 3. Onboarding e perfil: a falha do perfil não trava a abertura.
+    final (onboardingCompleted, _) = await (
+      OnboardingStorage().isCompleted(),
+      profileLoad,
+    ).wait;
 
     if (!mounted) return;
 
@@ -111,10 +105,7 @@ class _SplashPageState extends State<SplashPage>
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Colors.white,
-              AppColors.background,
-            ],
+            colors: [Colors.white, AppColors.background],
           ),
         ),
         child: Center(
@@ -127,7 +118,6 @@ class _SplashPageState extends State<SplashPage>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-
                     // Logo com sombra suave
                     Container(
                       padding: const EdgeInsets.all(20),
@@ -188,10 +178,10 @@ class _SplashPageState extends State<SplashPage>
                           builder: (context, child) {
                             return LinearProgressIndicator(
                               value: _progressController.value,
-                              backgroundColor:
-                                  AppColors.teal.withValues(alpha: 0.2),
-                              valueColor:
-                                  const AlwaysStoppedAnimation<Color>(
+                              backgroundColor: AppColors.teal.withValues(
+                                alpha: 0.2,
+                              ),
+                              valueColor: const AlwaysStoppedAnimation<Color>(
                                 AppColors.teal,
                               ),
                               minHeight: 6,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../domain/product_tag.dart';
+import '../../domain/entities/product_tag.dart';
 
 /// Atributo do produto ("Natural", "Atóxico"...): turquesa claro com check.
 class ProductTagBadge extends StatelessWidget {
@@ -30,10 +30,8 @@ class ProductTagBadge extends StatelessWidget {
           Flexible(
             child: Text(
               tag.label,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: AppColors.ink,
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(context).textTheme.labelSmall
+                  ?.copyWith(color: AppColors.ink, fontWeight: FontWeight.w600),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

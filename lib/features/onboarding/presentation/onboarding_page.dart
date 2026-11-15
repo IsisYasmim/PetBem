@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../data/onboarding_storage.dart';
@@ -13,20 +12,17 @@ class OnboardingPage extends StatefulWidget {
   static const List<OnboardingItem> items = [
     OnboardingItem(
       title: 'Descubra produtos',
-      description:
-          'Encontre rações, brinquedos e acessórios para seu pet.',
+      description: 'Encontre rações, brinquedos e acessórios para seu pet.',
       imagePath: 'assets/onboarding/products.jpg',
     ),
     OnboardingItem(
       title: 'Pagamento Seguro',
-      description:
-          'Check-out simplificado & pagamento seguro.',
+      description: 'Check-out simplificado & pagamento seguro.',
       imagePath: 'assets/onboarding/payment.jpg',
     ),
     OnboardingItem(
       title: 'Acompanhe Entrega',
-      description:
-          'Acompanhe pedidos em tempo real.',
+      description: 'Acompanhe pedidos em tempo real.',
       imagePath: 'assets/onboarding/delivery.jpg',
     ),
   ];
@@ -37,7 +33,6 @@ class OnboardingPage extends StatefulWidget {
 
 class _OnboardingPageState extends State<OnboardingPage>
     with SingleTickerProviderStateMixin {
-
   late final AnimationController _introController;
   late final Animation<double> _fadeAnimation;
   late final Animation<Offset> _slideAnimation;
@@ -61,15 +56,10 @@ class _OnboardingPageState extends State<OnboardingPage>
       curve: Curves.easeOut,
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.06),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _introController,
-        curve: Curves.easeOutCubic,
-      ),
-    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.06), end: Offset.zero).animate(
+          CurvedAnimation(parent: _introController, curve: Curves.easeOutCubic),
+        );
 
     _introController.forward();
   }
@@ -122,24 +112,18 @@ class _OnboardingPageState extends State<OnboardingPage>
   }
 
   Widget _buildTopBar() {
-    final isLastPage =
-        _currentPage == OnboardingPage.items.length - 1;
+    final isLastPage = _currentPage == OnboardingPage.items.length - 1;
 
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 8,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         child: Align(
           alignment: Alignment.centerRight,
           child: AnimatedOpacity(
             opacity: isLastPage ? 0 : 1,
             duration: const Duration(milliseconds: 200),
             child: TextButton(
-              onPressed: isLastPage || _isFinishing
-                  ? null
-                  : _finishOnboarding,
+              onPressed: isLastPage || _isFinishing ? null : _finishOnboarding,
               child: const Text(
                 'Pular',
                 style: TextStyle(
@@ -158,42 +142,35 @@ class _OnboardingPageState extends State<OnboardingPage>
   Widget _buildPageIndicator() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        OnboardingPage.items.length,
-        (index) {
-          final isActive = index == _currentPage;
+      children: List.generate(OnboardingPage.items.length, (index) {
+        final isActive = index == _currentPage;
 
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            width: isActive ? 26 : 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: isActive
-                  ? AppColors.coral
-                  : AppColors.teal.withValues(alpha: 0.35),
-              borderRadius: BorderRadius.circular(20),
-            ),
-          );
-        },
-      ),
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: isActive ? 26 : 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: isActive
+                ? AppColors.coral
+                : AppColors.teal.withValues(alpha: 0.35),
+            borderRadius: BorderRadius.circular(20),
+          ),
+        );
+      }),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final isLastPage =
-        _currentPage == OnboardingPage.items.length - 1;
+    final isLastPage = _currentPage == OnboardingPage.items.length - 1;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          FadeTransition(
-            opacity: _fadeAnimation,
-            child: _buildTopBar(),
-          ),
+          FadeTransition(opacity: _fadeAnimation, child: _buildTopBar()),
 
           Expanded(
             child: FadeTransition(
@@ -235,8 +212,7 @@ class _OnboardingPageState extends State<OnboardingPage>
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.coral,
                 foregroundColor: Colors.white,
-                disabledBackgroundColor:
-                    AppColors.coral.withValues(alpha: 0.6),
+                disabledBackgroundColor: AppColors.coral.withValues(alpha: 0.6),
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -272,9 +248,7 @@ class _OnboardingPageState extends State<OnboardingPage>
 }
 
 class _OnboardingContent extends StatelessWidget {
-  const _OnboardingContent({
-    required this.item,
-  });
+  const _OnboardingContent({required this.item});
 
   final OnboardingItem item;
 

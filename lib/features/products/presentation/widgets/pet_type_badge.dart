@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../domain/pet_type.dart';
+import '../../domain/entities/pet_type.dart';
 
 /// Para qual pet é o produto ("Cães", "Gatos"...): coral claro com patinha.
 /// Cor e ícone diferentes do ProductTagBadge, para os dois não se confundirem.
@@ -31,10 +31,8 @@ class PetTypeBadge extends StatelessWidget {
           Flexible(
             child: Text(
               petType.label,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: AppColors.ink,
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(context).textTheme.labelSmall
+                  ?.copyWith(color: AppColors.ink, fontWeight: FontWeight.w600),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

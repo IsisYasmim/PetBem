@@ -46,6 +46,14 @@ abstract final class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(foregroundColor: AppColors.ink),
       ),
+      // O coral é a cor primária, mas reprova como cor de texto (2,6:1).
+      // O botão preenchido usa coral no fundo e ink no rótulo.
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: AppColors.coral,
+          foregroundColor: AppColors.ink,
+        ),
+      ),
     );
   }
 }

@@ -32,9 +32,8 @@ class SearchEntry extends StatelessWidget {
                 Expanded(
                   child: Text(
                     'Buscar produtos para seu pet',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppColors.ink.withValues(alpha: 0.7),
-                    ),
+                    style: Theme.of(context).textTheme.bodyLarge
+                        ?.copyWith(color: AppColors.ink.withValues(alpha: 0.7)),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

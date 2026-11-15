@@ -14,6 +14,12 @@ void main() {
     expect(formatPrice(0), 'R\$ 0,00');
   });
 
+  test('formata peso em quilos com vírgula', () {
+    expect(formatWeightKg(5), '5 kg');
+    expect(formatWeightKg(5.5), '5,5 kg');
+    expect(formatWeightKg(10), '10 kg');
+  });
+
   test('separa os milhares com ponto', () {
     expect(formatPrice(99999), 'R\$ 999,99');
     expect(formatPrice(100000), 'R\$ 1.000,00');

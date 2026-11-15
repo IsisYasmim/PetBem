@@ -1,9 +1,8 @@
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingStorage {
   OnboardingStorage({SharedPreferencesAsync? preferences})
-      : _preferences = preferences ?? SharedPreferencesAsync();
+    : _preferences = preferences ?? SharedPreferencesAsync();
 
   static const String _completedKey = 'onboarding_completed';
 

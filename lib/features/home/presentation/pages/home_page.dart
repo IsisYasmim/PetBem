@@ -1,27 +1,31 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
+import '../../../../app/common/widgets/section_header.dart';
+import '../../../../app/common/widgets/status_message.dart';
+import '../../../../app/theme/app_layout.dart';
+import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../products/domain/product.dart';
-import '../../../products/domain/product_repository.dart';
+import '../../../products/domain/entities/product.dart';
+import '../../../products/domain/repositories/product_repository.dart';
+import '../../../products/presentation/pages/product_details_page.dart';
 import '../../../products/presentation/widgets/product_card.dart';
+import '../../../profile/domain/entities/user_profile.dart';
+import '../../../profile/domain/profile_match.dart';
+import '../../../profile/presentation/pages/profile_form_page.dart';
+import '../../../profile/presentation/profile_scope.dart';
 import '../greeting.dart';
-import '../widgets/best_sellers_states.dart';
+import '../widgets/best_sellers_loading.dart';
 import '../widgets/category_shortcuts.dart';
 import '../widgets/home_header.dart';
 import '../widgets/orders_shortcut_card.dart';
 import '../widgets/profile_prompt_card.dart';
 import '../widgets/search_entry.dart';
 import '../widgets/secure_payment_note.dart';
-import '../widgets/section_header.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.repository});
 
   final ProductRepository repository;
-
-  static const double maxContentWidth = 600;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -29,10 +33,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Future<List<Product>> _bestSellersFuture;
-
-  // Ainda não existe cadastro de pets. Quando existir, este valor virá
-  // de um repositório, e a Home trocará o convite automaticamente.
-  final bool _hasRegisteredPet = false;
 
   @override
   void initState() {
@@ -55,6 +55,19 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _openDetails(Product product) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) =>
+            ProductDetailsPage(product: product, repository: widget.repository),
+      ),
+    );
+  }
+
+  void _openProfileForm() {
+    Navigator.of(context).push(ProfileFormPage.route());
+  }
+
   void _showComingSoon(String feature) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -65,11 +78,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final horizontalPadding = math.max(
-      AppSpacing.lg,
-      (screenWidth - HomePage.maxContentWidth) / 2,
+    final horizontalPadding = AppLayout.horizontalPadding(
+      MediaQuery.sizeOf(context).width,
     );
+
+    final profile = ProfileScope.of(context).profile;
 
     return RefreshIndicator(
       onRefresh: _refresh,
@@ -102,20 +115,18 @@ class _HomePageState extends State<HomePage> {
             ),
             sliver: SliverList.list(
               children: [
-                HomeHeader(greeting: greetingFor(DateTime.now())),
+                HomeHeader(
+                  greeting: greetingFor(DateTime.now()),
+                  name: profile.name,
+                ),
                 const SizedBox(height: AppSpacing.lg),
                 SearchEntry(onTap: () => _showComingSoon('A busca')),
                 const SizedBox(height: AppSpacing.sm),
                 const SecurePaymentNote(),
-                const SizedBox(height: AppSpacing.lg),
-                if (_hasRegisteredPet)
-                  ProfilePromptCard.profile(
-                    onPressed: () => _showComingSoon('O perfil'),
-                  )
-                else
-                  ProfilePromptCard.pet(
-                    onPressed: () => _showComingSoon('O cadastro de pets'),
-                  ),
+                if (!profile.isComplete) ...[
+                  const SizedBox(height: AppSpacing.lg),
+                  ProfilePromptCard(onPressed: _openProfileForm),
+                ],
                 const SizedBox(height: AppSpacing.md),
                 OrdersShortcutCard(
                   onTap: () => _showComingSoon('O acompanhamento de pedidos'),
@@ -133,6 +144,16 @@ class _HomePageState extends State<HomePage> {
                   actionLabel: 'Ver todos',
                   onAction: () => _showComingSoon('A lista completa'),
                 ),
+                if (profile.isComplete)
+                  Padding(
+                    padding: const EdgeInsets.only(top: AppSpacing.xs),
+                    child: Text(
+                      'Primeiro, os produtos para os seus pets.',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppColors.ink.withValues(alpha: 0.8),
+                      ),
+                    ),
+                  ),
                 const SizedBox(height: AppSpacing.sm),
               ],
             ),
@@ -144,14 +165,14 @@ class _HomePageState extends State<HomePage> {
               horizontalPadding,
               AppSpacing.xl,
             ),
-            sliver: _buildBestSellers(),
+            sliver: _buildBestSellers(profile),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildBestSellers() {
+  Widget _buildBestSellers(UserProfile profile) {
     return FutureBuilder<List<Product>>(
       future: _bestSellersFuture,
       builder: (context, snapshot) {
@@ -165,7 +186,7 @@ class _HomePageState extends State<HomePage> {
 
         if (snapshot.hasError) {
           return SliverToBoxAdapter(
-            child: BestSellersMessage(
+            child: StatusMessage(
               icon: Icons.cloud_off_outlined,
               message: 'Não foi possível carregar os produtos.',
               actionLabel: 'Tentar novamente',
@@ -174,11 +195,14 @@ class _HomePageState extends State<HomePage> {
           );
         }
 
-        final products = snapshot.data ?? const <Product>[];
+        final products = sortByProfile(
+          snapshot.data ?? const <Product>[],
+          profile,
+        );
 
         if (products.isEmpty) {
           return const SliverToBoxAdapter(
-            child: BestSellersMessage(
+            child: StatusMessage(
               icon: Icons.shopping_bag_outlined,
               message: 'Ainda não temos produtos em destaque por aqui.',
             ),
@@ -191,7 +215,8 @@ class _HomePageState extends State<HomePage> {
             final product = products[index];
             return ProductCard(
               product: product,
-              onTap: () => _showComingSoon('O detalhe do produto'),
+              matchesProfile: matchesProfile(product, profile),
+              onTap: () => _openDetails(product),
             );
           },
           separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),

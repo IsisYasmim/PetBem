@@ -20,9 +20,8 @@ class SecurePaymentNote extends StatelessWidget {
           Expanded(
             child: Text(
               'Pagamento seguro e checkout simplificado',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.ink.withValues(alpha: 0.7),
-              ),
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(color: AppColors.ink.withValues(alpha: 0.7)),
             ),
           ),
         ],

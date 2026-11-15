@@ -21,3 +21,11 @@ String formatPrice(int cents) {
 
   return 'R\$ $grouped,$centavos';
 }
+
+/// Peso em quilos: 5 → "5 kg"; 5.5 → "5,5 kg".
+String formatWeightKg(double kilograms) {
+  if (kilograms == kilograms.roundToDouble()) {
+    return '${kilograms.toInt()} kg';
+  }
+  return '${formatDecimal(kilograms)} kg';
+}

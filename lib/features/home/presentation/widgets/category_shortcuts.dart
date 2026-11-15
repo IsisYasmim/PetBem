@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../products/domain/product_category.dart';
+import '../../../products/domain/entities/product_category.dart';
 import '../../../products/presentation/product_category_icon.dart';
 
 /// Atalhos de categoria em uma fileira que rola para o lado.
@@ -28,9 +28,8 @@ class CategoryShortcuts extends StatelessWidget {
     // com a escala de fonte do usuário: uma altura fixa daria overflow
     // com a fonte ampliada.
     final labelStyle = Theme.of(context).textTheme.labelMedium!;
-    final labelHeight = MediaQuery.textScalerOf(
-      context,
-    ).scale(labelStyle.fontSize! * (labelStyle.height ?? 1.2));
+    final labelHeight = MediaQuery.textScalerOf(context)
+        .scale(labelStyle.fontSize! * (labelStyle.height ?? 1.2));
 
     return SizedBox(
       // +2: folga para o arredondamento da altura da linha.
@@ -84,9 +83,8 @@ class _CategoryTile extends StatelessWidget {
               const SizedBox(height: AppSpacing.sm),
               Text(
                 category.label,
-                style: Theme.of(
-                  context,
-                ).textTheme.labelMedium?.copyWith(color: AppColors.ink),
+                style: Theme.of(context).textTheme.labelMedium
+                    ?.copyWith(color: AppColors.ink),
                 maxLines: 1,
               ),
             ],

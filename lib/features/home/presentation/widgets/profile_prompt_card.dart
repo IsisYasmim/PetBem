@@ -4,25 +4,14 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 
-/// O único destaque escuro da Home, com uma única ação.
-///
-/// A Home mostra um convite por vez: primeiro [ProfilePromptCard.pet];
-/// depois que o pet for cadastrado, [ProfilePromptCard.profile].
+/// Convite único: a pessoa e os pets são o mesmo cadastro.
 class ProfilePromptCard extends StatelessWidget {
-  const ProfilePromptCard.pet({super.key, required this.onPressed})
+  const ProfilePromptCard({super.key, required this.onPressed})
     : icon = Icons.pets,
-      title = 'Cadastre seu pet',
-      description =
-          'Conte quem é o seu melhor amigo e veja primeiro '
-          'os produtos certos para ele.',
-      actionLabel = 'Cadastrar pet';
-
-  const ProfilePromptCard.profile({super.key, required this.onPressed})
-    : icon = Icons.person_outline,
       title = 'Complete seu perfil',
       description =
-          'Salve seu endereço e sua forma de pagamento '
-          'e finalize suas compras mais rápido.',
+          'Cadastre você e seus pets e veja primeiro '
+          'os produtos certos para eles.',
       actionLabel = 'Completar perfil';
 
   final IconData icon;
